@@ -9,17 +9,19 @@ const priorities = document.getElementById('priorities');
 const jon = new Debtee('Jon');
 
 const onSubmit = (e) => {
-    console.log(e)
-    const debtor = new Debtor(name.value, currentBalance.value, currentMonthlyPayment.value, 1, currentMonthlyPayment.value, apr.value);
-    jon.debtors.push(debtor);
-    while(allDebtors.children.length > 0){
-        allDebtors.removeChild();
+    jon.addDebtor(name.value, currentBalance.value, currentMonthlyPayment.value, 1, currentMonthlyPayment.value, apr.value);
+    while(allDebtors.firstChild){
+        allDebtors.removeChild(allDebtors.firstChild);
     }
+    window.localStorage.setItem('debtors', JSON.stringify(jon.debtors));
+    emptyVals();
     displayDebtors();
 }
 
 const displayDebtors = () => {
-    jon.debtors.forEach(debtor => {
+    let debtors = JSON.parse(window.localStorage.getItem('debtors'))
+    console.log(debtors)
+    debtors.forEach(debtor => {
         let item = document.createElement('li');
         let balance = document.createElement('p');
         let debtorName = document.createElement('h3');
@@ -30,5 +32,11 @@ const displayDebtors = () => {
         allDebtors.appendChild(item);
     })
 }
-
+const emptyVals = () => {
+    name.value = "";
+    currentBalance.value = "";
+    currentMonthlyPayment.value = "";
+    currentMonthlyPayment.value = "";
+    apr.value = "";
+}
 submitBtn.addEventListener('click', onSubmit);
