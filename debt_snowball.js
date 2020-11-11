@@ -1,28 +1,27 @@
 class Debtor{
-    constructor(name, currentBalance = 0, currentMonthlypayment = 0, dueDate = 1, minMonthlyPayment = 0, apr = 0){
+    constructor(name, currentBalance = 0, currentMonthlyPayment = 0, dueDate = 1, minMonthlyPayment = 0, apr = 0){
         this.name = name;
         this.currentBalance = currentBalance; //use as priority option
-        this.currentMonthlypayment = currentMonthlypayment;
+        this.currentMonthlyPayment = currentMonthlyPayment;
         this.dueDate = dueDate;
         this.minMonthlyPayment = minMonthlyPayment;
         this.apr = apr ? apr:0; //use as priority option
-        this.monthsToPayoff = Infinity; //use as priority option
         this.extraPayment = 0;
+        this.monthsToPayoff = this.setMonthsToPayoff(); //use as priority option
     }
     changeName(newName){this.name = newName}
     addToBalance(amt){this.currentBalance += amt;}
     payOnBalance(amt){this.currentBalance -= amt;}
-    setCurrentMonthlyPayment(payment){this.currentMonthlypayment = payment}
+    setCurrentMonthlyPayment(payment){this.currentMonthlyPayment = payment}
     changeDueDate(newDate){this.dueDate = newDate;}
     setMinMonthlyPayment(payment){this.minMonthlyPayment = payment}
     setApr(newApr){this.apr = newApr}
     getMonthsToPayoff(){return this.monthsToPayoff}
     setMonthsToPayoff(){
-        let payment = this.minMonthlyPayment + this.extraPayment;
+        let payment = this.currentMonthlyPayment + this.extraPayment;
         let payed = false;
         let months = 0;
         let balance = this.currentBalance;
-
         while(!payed){
             balance -= payment;
             months++;
@@ -42,7 +41,7 @@ class Debtee{
         this.priority = 'currentBalance';
     }
     addDebtor(name, currentBalance, currentMonthlypayment, dueDate, minMonthlyPayment, apr){
-        let newDebtor = new Debtor(name, currentBalance, currentMonthlypayment, dueDate, minMonthlyPayment, apr)
+        let newDebtor = new Debtor(name, currentBalance, currentMonthlypayment, dueDate, minMonthlyPayment, apr);
         if(!this.debtors[newDebtor]) {
             this.debtors.push(newDebtor);
         }
@@ -65,7 +64,6 @@ class Debtee{
     prioritizeDebtors(priority){
         const queue = new PriorityQueue();
         if(!priority) priority = this.priority;
-
         this.debtors.forEach(debtor => {
             queue.enqueue(debtor, debtor[priority])
         });
@@ -114,54 +112,52 @@ class PriorityQueue{
             let leftIdx = index * 2 + 1;
             let rightIdx = index * 2 + 2;
             let leftChild, rightChild;
-            let swap = null;
+            let swapIdx = null;
             if(leftIdx < length){
                 leftChild = vals[leftIdx];
                 if(leftChild.priority < element.priority){
-                    swap = leftIdx;
+                    swapIdx = leftIdx;
                 }
             }
             if(rightIdx < length){
                 rightChild = vals[rightIdx];
                 if(
-                    (swap === null && rightChild.priority < element.priority) || 
-                    (swap !== null && rightChild.priority < leftChild.priority)
+                    (swapIdx === null && rightChild.priority < element.priority) || 
+                    (swapIdx !== null && rightChild.priority < leftChild.priority)
                     ){
-                        swap = rightIdx;
+                        swapIdx = rightIdx;
                 }
             }
-            if(swap === null) break;
-            vals[index] = vals[swap];
-            vals[swap] = element;
-            index = swap;
+            if(swapIdx === null) break;
+            vals[index] = vals[swapIdx];
+            vals[swapIdx] = element;
+            index = swapIdx;
         }
     }
     bubbleUp(){
-        let vals = this.vals;
-        let index = vals.length - 1;
+        let index = this.vals.length - 1;
+        let parentIndex;
+
         while(index > 0){
-            let parentIndex = Math.floor((index - 1) / 2);
-            if(vals[parentIndex].priority < vals[index].priority) break;
-            this.swap(parentIndex, index);
+            parentIndex = Math.floor((index - 1) / 2);
+
+            if(this.vals[parentIndex].priority < this.vals[index].priority) break;
+            let temp = this.vals[parentIndex];
+            this.vals[parentIndex] = this.vals[index];
+            this.vals[index] = temp;
             index = parentIndex;
+
         }
         return this;
     }
     
     swap(i1, i2){
+        console.log("swapping", this)
         let temp = this.vals[i1];
         this.vals[i1] = this.vals[i2];
         this.vals[i2] = temp;
     }
 }
-//name, currentBalance = 0, currentMonthlypayment = 0, dueDate = 1, minMonthlyPayment = 0, apr = 0
-// let jon = new Debtee('Jon');
-// jon.addDebtor('Lending Club', 500, 150, 5, 150, 10)
-// jon.addDebtor('Ford', 500, 500, 15, 500, 0)
-
-// console.log(jon.prioritizeDebtors('apr').vals);
-
-
 
 //TO DO
 /*
