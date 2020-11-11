@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="app.css">
+    <title>Debt Manager</title>
+</head>
+<body>
+    <div id='wrapper'>
+        <section class="enterDiv">
+            <form class="inputDebtorForm" name="inputDebtorForm">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name">
+                <label for="currentMonthlyPayment">Current Monthly Payment</label>
+                <input type="text" id="currentMonthlyPayment" name="currentMonthlyPayment">
+                <label for="currentBalance">Current Balance</label>
+                <input type="text" id="currentBalance" name="currentBalance">
+                <label for="apr">Annual Percentage Rate</label>
+                <input type="text" id="apr" name="apr">
+                <button id="submitForm" type="submit" form="inputDebtorForm">Submit</button>
+            </form>
+        </section>
+        <aside class="displayDebtors">
+            <ul id="allDebtors">
+
+            </ul>
+        </aside>
+        <section class="arrangeDebtors">
+            <select name="priorities" id="priorities">
+                <option value="currentBalance">Balance</option>
+                <option value="apr">APR</option>
+                <option value="monthsToPayoff">Months to payoff</option>
+            </select>
+            <ul id="priorityList">
+
+            </ul>
+        </section>
+    </div>
+</body>
+<script src="debt_snowball.js"></script>
+<script src="app.js"></script>
+</html>
