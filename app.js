@@ -6,6 +6,7 @@ const submitBtn = document.getElementById('submitForm');
 const allDebtors = document.getElementById('allDebtors');
 const priorityList = document.getElementById('priorityList');
 const priorities = document.getElementById('priorities');
+const priorityBtn = document.getElementById('priorityBtn');
 const jon = new Debtee('Jon');
 
 const onSubmit = (e) => {
@@ -20,7 +21,7 @@ const onSubmit = (e) => {
 
 const displayDebtors = () => {
     let debtors = JSON.parse(window.localStorage.getItem('debtors'))
-    console.log(debtors)
+    if(jon.debtors.length === 0) jon.debtors = debtors;
     debtors.forEach(debtor => {
         let item = document.createElement('li');
         let balance = document.createElement('p');
@@ -32,6 +33,23 @@ const displayDebtors = () => {
         allDebtors.appendChild(item);
     })
 }
+const dispayPrioritizedList = () => {
+    let priority = priorities.value;
+    let debtors = jon.prioritizeDebtors(priority);
+    while(priorityList.firstChild){
+        priorityList.removeChild(priorityList.firstChild);
+    }
+    debtors.vals.forEach(debtor => {    
+        let item = document.createElement('li');
+        let balance = document.createElement('p');
+        let debtorName = document.createElement('h3');
+        item.appendChild(debtorName);
+        item.appendChild(balance);
+        balance.innerText = debtor.val.currentBalance;
+        debtorName.innerText = debtor.val.name;
+        priorityList.appendChild(item);
+    })
+}
 const emptyVals = () => {
     name.value = "";
     currentBalance.value = "";
@@ -40,3 +58,5 @@ const emptyVals = () => {
     apr.value = "";
 }
 submitBtn.addEventListener('click', onSubmit);
+priorityBtn.addEventListener('click', dispayPrioritizedList);
+window.addEventListener('load', displayDebtors);
